@@ -17,10 +17,10 @@ app.add_middleware(
 
 @app.get('/')
 async def get():
-    return {"message": "Saludos desde app!"}
+    return {'status_code': 200, 'message': "Saludos desde app!"}
 
-# http://127.0.0.1:8000/article/?url=https://www.df.cl/economia-y-politica/macro/las-senales-economicas-en-mayo-se-modera-el-interes-por-el-consumo
-@app.get('/article/')
+
+@app.get('/article/', status_code=200)
 async def getArticle(url: str):
     response = articleScrapper(url)
     return response
