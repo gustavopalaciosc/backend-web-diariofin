@@ -29,7 +29,7 @@ app.state.limiter = limiter
 async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     return JSONResponse(
         status_code=429,
-        content={"status_code": 429, "message": "Too many requests, please try again later."},
+        content={"status_code": 429, "message": "Servidor sobrecargado. Vuelva a intentar más tarde."},
     )
 
 @app.get('/')
@@ -38,7 +38,7 @@ async def get():
 
 
 @app.get('/article/', status_code=200)
-@limiter.limit('5/minute')
+@limiter.limit('30/minute')
 async def getArticle(request: Request, url: str):
     response = articleScrapper(url)
     return response
