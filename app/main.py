@@ -40,6 +40,6 @@ async def get():
 @app.get('/article/', status_code=200)
 @limiter.limit('30/minute')
 async def getArticle(request: Request, url: str):
-    response = articleScrapper(url)
+    response = await articleScrapper(url)
     return response
 
