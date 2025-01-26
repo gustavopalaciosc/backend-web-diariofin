@@ -1,37 +1,21 @@
 import requests
 from bs4 import BeautifulSoup as bs
 import json
-
-
-async def getImageUrl(soup):
-        try:
-                script_tag = soup.find('script', {'type': 'application/ld+json'})
-
-                # Extraer el contenido del script
-                json_content = script_tag.string
-
-                # Parsear el contenido JSON
-                data = json.loads(json_content)
-
-                # Acceder a la URL de la imagen dentro de "@graph" -> "image" -> "url"
-                image_url = data['@graph'][0]['image']['url']
-
-                return image_url
-        except:
-                return ""
-
+from .get_soup import get_soup
+from .title_scrapper import get_title
+from .subtitle_scrapper import get_subtitle
+from .body_scrapper import get_article_body
+from .get_image_url import get_image_url
 
 
 async def articleScrapper(url):
 
         try:
-                headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
-                html_content  = requests.get(url, allow_redirects=False, headers=headers).text
-                soup = bs(html_content, 'html.parser')
-                title = soup.find('h1', class_='titular').text
-                subtitle = soup.find('h2', class_='bajada').text
-                text_list = [p.get_text(strip=True) for p in soup.find_all('p')][8:]
-                image_url = await getImageUrl(soup)
+                soup = get_soup(url)
+                title = get_title(soup)
+                subtitle = get_subtitle(soup)
+                text_list = get_article_body(soup)
+                image_url = get_image_url(soup)
                 article = {'status_code': 200, 
                            'title': title,
                            'subtitle': subtitle,
@@ -45,11 +29,15 @@ async def articleScrapper(url):
 
   
 if __name__ == "__main__":
-        url = "https://www.df.cl/empresas/construccion/tdlc-ordena-reanudar-proceso-licitatorio-del-duty-free-del-aeropuerto-de"
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
-        html_content  = requests.get(url, allow_redirects=False, headers=headers).text
-        soup = bs(html_content, 'html.parser')
-        #print(html_content)
-        print(articleScrapper(url))
+        #url = "https://www.df.cl/mercados/banca-fintech/parodi-y-su-ultima-conversacion-con-pinera-estaba-preocupado-por"
+        url = "https://www.df.cl/mercados/banca-fintech/la-banca-y-el-retail-financiero-celebran-que-hacienda-incluyera-a-las"
+        data = get_soup(url)
+        title = get_title(data)
+        subtitle = get_subtitle(data)
+        body = get_article_body(data)
+        image = get_image_url(data)
+        print
+        print(image)
+        
 
 

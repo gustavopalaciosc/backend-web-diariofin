@@ -41,5 +41,6 @@ async def get():
 @limiter.limit('30/minute')
 async def getArticle(request: Request, url: str):
     response = await articleScrapper(url)
+    print(response["image_url"])
     return response
 
